@@ -35,6 +35,20 @@
 #include <string.h>
 #include <time.h>
 
+// GLAD (included by rlgl.h) embeds its own khrplatform.h which defines the
+// __khrplatform_h_ include guard but uses KHRONOS_GLAD_API_PTR instead of
+// KHRONOS_APIENTRY. When the system EGL headers later try to use
+// KHRONOS_APIENTRY (via eglplatform.h -> khrplatform.h, which is now skipped
+// due to the guard), the macro is undefined and all EGL function declarations
+// fail. Fix by defining the missing macros before including EGL headers.
+#ifndef KHRONOS_APIENTRY
+    #ifdef _WIN32
+        #define KHRONOS_APIENTRY __stdcall
+    #else
+        #define KHRONOS_APIENTRY
+    #endif
+#endif
+
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 

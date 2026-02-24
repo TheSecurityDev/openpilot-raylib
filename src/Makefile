@@ -460,7 +460,6 @@ ifeq ($(TARGET_PLATFORM),PLATFORM_COMMA)
     CFLAGS += -Werror=implicit-function-declaration
 endif
 ifeq ($(TARGET_PLATFORM),PLATFORM_OFFSCREEN)
-    CFLAGS += -DEGL_NO_X11
     CFLAGS += -Werror=implicit-function-declaration
 endif
 # Use Wayland display on Linux desktop
