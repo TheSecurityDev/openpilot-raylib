@@ -559,6 +559,8 @@ const char *TextFormat(const char *text, ...);              // Formatting of tex
     #include "platforms/rcore_android.c"
 #elif defined(PLATFORM_COMMA)
     #include "platforms/rcore_comma.c"
+#elif defined(PLATFORM_OFFSCREEN)
+    #include "platforms/rcore_offscreen.c"
 #else
     // TODO: Include your custom platform backend!
     // i.e software rendering backend or console backend!
@@ -630,6 +632,8 @@ void InitWindow(int width, int height, const char *title)
     TRACELOG(LOG_INFO, "Platform backend: ANDROID");
 #elif defined(PLATFORM_COMMA)
     TRACELOG(LOG_INFO, "Platform backend: COMMA");
+#elif defined(PLATFORM_OFFSCREEN)
+    TRACELOG(LOG_INFO, "Platform backend: OFFSCREEN (EGL surfaceless)");
 #else
     // TODO: Include your custom platform backend!
     // i.e software rendering backend or console backend!
@@ -985,9 +989,9 @@ void EndDrawing(void)
         CORE.Time.frame += waitTime;    // Total frame time: update + draw + wait
     }
 
-#if !defined(PLATFORM_COMMA)
+#if !defined(PLATFORM_COMMA) && !defined(PLATFORM_OFFSCREEN)
     PollInputEvents();      // Poll user events (before next frame update)
-#endif  // PLATFORM_COMMA
+#endif  // PLATFORM_COMMA || PLATFORM_OFFSCREEN
 #endif
 
 #if defined(SUPPORT_SCREEN_CAPTURE)

@@ -181,6 +181,15 @@ ifeq ($(TARGET_PLATFORM),PLATFORM_COMMA)
         PLATFORM_SHELL = sh
     endif
 endif
+ifeq ($(TARGET_PLATFORM),PLATFORM_OFFSCREEN)
+    UNAMEOS = $(shell uname)
+    ifeq ($(UNAMEOS),Linux)
+        PLATFORM_OS = LINUX
+    endif
+    ifndef PLATFORM_SHELL
+        PLATFORM_SHELL = sh
+    endif
+endif
 ifeq ($(TARGET_PLATFORM),PLATFORM_WEB)
     ifeq ($(PLATFORM_OS),LINUX)
         ifndef PLATFORM_SHELL
@@ -265,6 +274,9 @@ ifeq ($(TARGET_PLATFORM),PLATFORM_DRM)
 endif
 ifeq ($(TARGET_PLATFORM),PLATFORM_COMMA)
     GRAPHICS = GRAPHICS_API_OPENGL_ES2
+endif
+ifeq ($(TARGET_PLATFORM),PLATFORM_OFFSCREEN)
+    GRAPHICS ?= GRAPHICS_API_OPENGL_33
 endif
 ifeq ($(TARGET_PLATFORM),PLATFORM_WEB)
     # On HTML5 OpenGL ES 2.0 is used, emscripten translates it to WebGL 1.0
@@ -371,6 +383,9 @@ ifeq ($(RAYLIB_BUILD_MODE),RELEASE)
     ifeq ($(TARGET_PLATFORM),PLATFORM_COMMA)
         CFLAGS += -O2
     endif
+    ifeq ($(TARGET_PLATFORM),PLATFORM_OFFSCREEN)
+        CFLAGS += -O1
+    endif
 endif
 
 # Additional flags for compiler (if desired)
@@ -442,6 +457,10 @@ ifeq ($(TARGET_PLATFORM),PLATFORM_DRM)
     CFLAGS += -Werror=implicit-function-declaration
 endif
 ifeq ($(TARGET_PLATFORM),PLATFORM_COMMA)
+    CFLAGS += -Werror=implicit-function-declaration
+endif
+ifeq ($(TARGET_PLATFORM),PLATFORM_OFFSCREEN)
+    CFLAGS += -DEGL_NO_X11
     CFLAGS += -Werror=implicit-function-declaration
 endif
 # Use Wayland display on Linux desktop
@@ -646,6 +665,9 @@ ifeq ($(TARGET_PLATFORM),PLATFORM_COMMA)
     ifeq ($(RAYLIB_MODULE_AUDIO),TRUE)
         LDLIBS += -latomic
     endif
+endif
+ifeq ($(TARGET_PLATFORM),PLATFORM_OFFSCREEN)
+    LDLIBS = -lEGL -lGL -lpthread -lrt -lm -ldl
 endif
 ifeq ($(TARGET_PLATFORM),PLATFORM_ANDROID)
     LDLIBS = -llog -landroid -lEGL -lGLESv2 -lOpenSLES -lc -lm
