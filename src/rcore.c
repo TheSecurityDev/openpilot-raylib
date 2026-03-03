@@ -676,8 +676,7 @@ void InitWindow(int width, int height, const char *title)
     CORE.Window.screenScale = MatrixIdentity();     // No draw scaling required by default
     if ((title != NULL) && (title[0] != 0)) CORE.Window.title = title;
 
-    // Initialize default identity rotation rects (full copy, no rotation)
-    // Comma platform overrides these in InitPlatform() for device-specific rotation
+    // Initialize default rotation rects
     CORE.Window.rotation_source = (Rectangle){ 0.0f, 0.0f, (float)CORE.Window.screen.width, -(float)CORE.Window.screen.height };
     CORE.Window.rotation_destination = (Rectangle){ 0.0f, 0.0f, (float)CORE.Window.screen.width, (float)CORE.Window.screen.height };
 
