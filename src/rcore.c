@@ -770,10 +770,6 @@ void CloseWindow(void)
     ClosePlatform();
     //--------------------------------------------------------------
 
-    // Reset rotation state to prevent poisoning from temp windows
-    CORE.Window.rotation_source = (Rectangle){0};
-    CORE.Window.rotation_destination = (Rectangle){0};
-
     CORE.Window.ready = false;
     TRACELOG(LOG_INFO, "Window closed successfully");
 }
