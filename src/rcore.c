@@ -676,6 +676,11 @@ void InitWindow(int width, int height, const char *title)
     CORE.Window.screenScale = MatrixIdentity();     // No draw scaling required by default
     if ((title != NULL) && (title[0] != 0)) CORE.Window.title = title;
 
+    // Initialize default identity rotation rects (full copy, no rotation)
+    // Comma platform overrides these in InitPlatform() for device-specific rotation
+    CORE.Window.rotation_source = (Rectangle){ 0.0f, 0.0f, (float)CORE.Window.screen.width, -(float)CORE.Window.screen.height };
+    CORE.Window.rotation_destination = (Rectangle){ 0.0f, 0.0f, (float)CORE.Window.screen.width, (float)CORE.Window.screen.height };
+
     // Initialize global input state
     memset(&CORE.Input, 0, sizeof(CORE.Input));     // Reset CORE.Input structure to 0
     CORE.Input.Keyboard.exitKey = KEY_ESCAPE;
@@ -735,14 +740,6 @@ void InitWindow(int width, int height, const char *title)
     TRACELOG(LOG_INFO, "SYSTEM: Working Directory: %s", GetWorkingDirectory());
 
     CORE.Window.rotated_fb = LoadRenderTexture(CORE.Window.screen.width, CORE.Window.screen.height);
-
-    // Initialize default (identity) rotation params for non-comma platforms.
-    // rcore_comma.c's InitPlatform() sets rotation_destination.width > 0 for device rotation,
-    // so this guard prevents overwriting those values.
-    if (CORE.Window.rotation_destination.width == 0.0f) {
-        CORE.Window.rotation_source = (Rectangle){ 0.0f, 0.0f, (float)CORE.Window.screen.width, -(float)CORE.Window.screen.height };
-        CORE.Window.rotation_destination = (Rectangle){ 0.0f, 0.0f, (float)CORE.Window.screen.width, (float)CORE.Window.screen.height };
-    }
 
     CORE.Window.color_correction_shader = LoadShaderFromMemory(NULL, CORE.Window.color_correction_shader_src);
     if (!IsShaderValid(CORE.Window.color_correction_shader)) {
